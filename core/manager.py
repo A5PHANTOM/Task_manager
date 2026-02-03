@@ -14,7 +14,7 @@ class TaskManager:
         return task
     
     def list_tasks(self, status = None):
-        tasks = self.storage.load_task()
+        tasks = self.storage.load_tasks()
         if status :
             return [t for t in tasks if t.status == status ]
         return tasks
@@ -38,6 +38,6 @@ class TaskManager:
         self.storage.save_all(new_tasks)
 
 
-        
+
 
     

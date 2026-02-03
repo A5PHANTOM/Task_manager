@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 from core.models import Task
-class JSONStorgae:
+class JSONStorage:
     def __init__(self,file_path: str):
         self.file_path = Path(file_path)
         self.file_path.parent.mkdir(parents=True, exist_ok=True)
@@ -22,7 +22,7 @@ class JSONStorgae:
                 status = item["status"],
                 priority=item["priority"]
             )
-            tasks.append(tasks)
+            tasks.append(task)
 
         return tasks
     
