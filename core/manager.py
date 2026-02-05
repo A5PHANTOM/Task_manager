@@ -21,7 +21,7 @@ class TaskManager:
     
 
     def update_task_status(self,task_id : int, status : str ):
-        tasks = self.storage.load()
+        tasks = self.storage.load_tasks()
         for task in tasks :
             if task.task_id == task_id :
                 task.update_status(status)
@@ -30,7 +30,7 @@ class TaskManager:
         raise TaskNotFount(f"Task {task_id} not Found")
     
     def delete_task(self,task_id : int):
-        tasks = self.storage.load_task()
+        tasks = self.storage.load_tasks()
         new_tasks = [t for t in tasks if t.task_id != task_id]
 
         if len(tasks) == len(new_tasks):

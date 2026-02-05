@@ -10,7 +10,7 @@ class Task:
 
 
     def update_status(self,new_status : str):
-        if new_status in ("pending","in_progress","completed"):
+        if new_status not in ("pending","in_progress","completed"):
             raise ValueError("Invalid task status")
         self.status = new_status
 

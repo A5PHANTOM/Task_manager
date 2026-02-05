@@ -48,8 +48,8 @@ def main () :
 
     #add
     add_parser = subparsers.add_parser("add")
-    add_parser.add_argument("--title--",required=True)
-    add_parser.add_argument("__priority__",default="medium")
+    add_parser.add_argument("--title",required=True)
+    add_parser.add_argument("--priority",default="medium")
     add_parser.set_defaults(func=add_task)
 
     #list
@@ -61,12 +61,12 @@ def main () :
     update_parser = subparsers.add_parser("update")
     update_parser.add_argument("--id",type= int ,required=True)
     update_parser.add_argument("--status",required=True)
-    update_parser.set_defaults(func=update_parser)
+    update_parser.set_defaults(func=update_task)
     
     #delete
     delete_parser = subparsers.add_parser("delete")
     delete_parser.add_argument("--id",type=int,required=True)
-    delete_parser.set_defaults(func=delete_parser)
+    delete_parser.set_defaults(func=delete_task)
 
     args = parser.parse_args()
 
