@@ -2,6 +2,7 @@ import argparse
 from core.manager import TaskManager
 from storage.json_storage import JSONStorage
 from core.exceptions import TaskNotFount
+from utils.file_ops import import_tasks_from_json, export_tasks_to_csv
 
 def get_manager():
     storage = JSONStorage('data/tasks.json')
@@ -40,6 +41,18 @@ def delete_task(args):
     except TaskNotFount as e:
         return(e)
     
+def import_tasks(args):
+    manager = get_manager()
+    import_tasks_from_json(args.file,manager)
+    print("Tasks imported sucessfully")
+
+def export_tasks(args):
+    manager = get_manager()
+    export_tasks_to_csv(args.file,manager.tasks)
+    print("tasks exported sucessfully")
+
+
+
 
 
 def main () :
@@ -67,6 +80,18 @@ def main () :
     delete_parser = subparsers.add_parser("delete")
     delete_parser.add_argument("--id",type=int,required=True)
     delete_parser.set_defaults(func=delete_task)
+
+    
+    # import
+    import_parser = subparsers.add_parser("import")
+    import_parser.add_argument("--file", required=True)
+    import_parser.set_defaults(func=import_tasks)
+
+# export
+    export_parser = subparsers.add_parser("export")
+    export_parser.add_argument("--file", required=True)
+    export_parser.set_defaults(func=export_tasks)
+
 
     args = parser.parse_args()
 
