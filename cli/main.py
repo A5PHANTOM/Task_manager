@@ -1,105 +1,20 @@
 import argparse
-from core.manager import TaskManager
 from storage.json_storage import JSONStorage
-from core.exceptions import TaskNotFount
-from utils.file_ops import import_tasks_from_json, export_tasks_to_csv
+from core.manager import TaskManager
+from utils.file_ops import import_tasks_from_json,export_tasks_to_csv
 
-def get_manager():
-    storage = JSONStorage('data/tasks.json')
-    return TaskManager(storage)
+storage = JSONStorage("data/tasks.json")
+manager = TaskManager(storage)
 
-def add_task(args):
-    manager = get_manager()
-    task = manager.add_task(args.title, args.priority)
-    print(f"Task added :[{task.task_id}] {task.title}")
+parser = argparse.ArgumentParser()
+sub = parser.add_subparsers(dest="command")
 
-def list_tasks(args):
-    manager = get_manager()
-    tasks = manager.list_tasks(args.status)
+add = sub.add_parser("add")
+add.add_argument("--title", required=True)
+add.add_argument("--priority", default="medium")
 
-    if not tasks:
-        print("No tasks found")
-        return 
-    for task in tasks:
-         print(f"[{task.task_id}] {task.title} | {task.status} | {task.priority}")
+args = parser.parse_args()
 
-
-def update_task(args):
-    manager = get_manager()
-    try :
-        task = manager.update_task_status(args.id,args.status)
-        print(f"Task {task.task_id} updated to {task.status}")
-    except TaskNotFount as e :
-        print(e)
-
-
-def delete_task(args):
-    manager = get_manager()
-    try:
-        manager.delete_task(args.id)
-        print(f"Task {args.id} deteled")
-    except TaskNotFount as e:
-        return(e)
-    
-def import_tasks(args):
-    manager = get_manager()
-    import_tasks_from_json(args.file,manager)
-    print("Tasks imported sucessfully")
-
-def export_tasks(args):
-    manager = get_manager()
-    export_tasks_to_csv(args.file,manager.tasks)
-    print("tasks exported sucessfully")
-
-
-
-
-
-def main () :
-    parser = argparse.ArgumentParser(description="Smart Task Tracker")
-    subparsers = parser.add_subparsers(dest="command")
-
-    #add
-    add_parser = subparsers.add_parser("add")
-    add_parser.add_argument("--title",required=True)
-    add_parser.add_argument("--priority",default="medium")
-    add_parser.set_defaults(func=add_task)
-
-    #list
-    list_parser = subparsers.add_parser("list")
-    list_parser.add_argument("--status",choices=["pending","in-progress","completed"])
-    list_parser.set_defaults(func=list_tasks)
-
-    #update 
-    update_parser = subparsers.add_parser("update")
-    update_parser.add_argument("--id",type= int ,required=True)
-    update_parser.add_argument("--status",required=True)
-    update_parser.set_defaults(func=update_task)
-    
-    #delete
-    delete_parser = subparsers.add_parser("delete")
-    delete_parser.add_argument("--id",type=int,required=True)
-    delete_parser.set_defaults(func=delete_task)
-
-    
-    # import
-    import_parser = subparsers.add_parser("import")
-    import_parser.add_argument("--file", required=True)
-    import_parser.set_defaults(func=import_tasks)
-
-# export
-    export_parser = subparsers.add_parser("export")
-    export_parser.add_argument("--file", required=True)
-    export_parser.set_defaults(func=export_tasks)
-
-
-    args = parser.parse_args()
-
-    if not args.command:
-        parser.print_help()
-        return 
-    
-    args.func(args)
-
-if __name__ == "__main__":
-    main()
+if args.command == "add":
+    manager.add_task(args.title, args.priority)
+    print("Task added")

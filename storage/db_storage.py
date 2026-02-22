@@ -13,20 +13,20 @@ class TaskModel(Base):
     priority = Column(String)
 
 
-class DBStrorage :
+class DBStorage :
     def __init__(self,db_url="sqlite:///tasks.db"):
         self.engine = create_engine(db_url)
         Base.metadata.create_all(self.engine)
         self.Session =sessionmaker(bind=self.engine)
 
-    def load_task(self):
+    def load_tasks(self):
         session = self.Session()
         rows = session.query(TaskModel).all()
         tasks = [Task(r.task_id, r.title, r.status, r.priority) for r in rows]
         session.close()
         return tasks
     
-    def save_tasks(self,task):
+    def save_task(self,task):
         session = self.Session()
         row = TaskModel(
             task_id=task.task_id,
@@ -53,7 +53,7 @@ class DBStrorage :
         session.close()
 
     def get_next_id (self):
-        tasks = self.load_task()
+        tasks = self.load_tasks()
         if not  tasks:
             return 1
         return max(t.task_id for t in tasks)+1

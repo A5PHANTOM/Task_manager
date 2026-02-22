@@ -77,7 +77,7 @@ elif menu == "Update Task":
         try:
             task = manager.update_task_status(task_id, new_status)
             st.success(f"Task {task.task_id} updated to {task.status}")
-        except TaskNotFoundError as e:
+        except TaskNotFount as e:
             st.error(str(e))
 
 # ---------------- DELETE TASK ----------------
@@ -90,7 +90,7 @@ elif menu == "Delete Task":
         try:
             manager.delete_task(task_id)
             st.success(f"Task {task_id} deleted")
-        except TaskNotFoundError as e:
+        except TaskNotFount as e:
             st.error(str(e))
 
 # ---------------- IMPORT TASKS ----------------
