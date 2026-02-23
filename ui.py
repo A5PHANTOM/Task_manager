@@ -71,34 +71,29 @@ elif menu == "Search Tasks":
     # Get all titles for autocomplete/suggestions
     all_titles = manager.get_all_titles()
     
-    # Search input
-    search_term = st.text_input("Search by title")
-    
-    if search_term:
-        # Show matching titles as suggestions
-        matching_titles = [title for title in all_titles if search_term.lower() in title.lower()]
-        
-        if matching_titles:
-            st.write("**Suggestions:**")
-            for title in matching_titles[:5]:  # Show top 5 matches
-                st.write(f"• {title}")
-        
-        # Perform search
-        results = manager.search_tasks(search_term)
-        
-        st.write("---")
-        st.write(f"**Found {len(results)} task(s):**")
-        
-        if results:
-            for task in results:
-                st.write(
-                    f"**[{task.task_id}] {task.title}** "
-                    f"| {task.status} | {task.priority}"
-                )
-        else:
-            st.info("No tasks found matching your search")
+    if not all_titles:
+        st.info("No tasks available")
     else:
-        st.info("Enter a search term to find tasks")
+        # Searchable dropdown - type to filter, just like Google
+        selected_title = st.selectbox(
+            "Search and select a task (start typing to filter):",
+            options=[""] + all_titles,
+            index=0,
+            key="search_dropdown"
+        )
+        
+        # Show task details when selected
+        if selected_title:
+            results = manager.search_tasks(selected_title)
+            if results:
+                task = results[0]
+                st.write("---")
+                st.write("**Task Details:**")
+                st.write(f"**ID:** {task.task_id}")
+                st.write(f"**Title:** {task.title}")
+                st.write(f"**Status:** {task.status}")
+                st.write(f"**Priority:** {task.priority}")
+                st.write(f"**Created:** {task.created_at}")
 
 # ---------------- UPDATE TASK ----------------
 elif menu == "Update Task":
