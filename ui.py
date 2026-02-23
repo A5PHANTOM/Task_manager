@@ -18,6 +18,7 @@ menu = st.sidebar.selectbox(
     [
         "Add Task",
         "View Tasks",
+        "Search Tasks",
         "Update Task",
         "Delete Task",
         "Import Tasks",
@@ -63,6 +64,42 @@ elif menu == "View Tasks":
                 f"| {task.status} | {task.priority}"
             )
 
+# ---------------- SEARCH TASKS ----------------
+elif menu == "Search Tasks":
+    st.header("🔍 Search Tasks")
+
+    # Get all titles for autocomplete/suggestions
+    all_titles = manager.get_all_titles()
+    
+    # Search input
+    search_term = st.text_input("Search by title")
+    
+    if search_term:
+        # Show matching titles as suggestions
+        matching_titles = [title for title in all_titles if search_term.lower() in title.lower()]
+        
+        if matching_titles:
+            st.write("**Suggestions:**")
+            for title in matching_titles[:5]:  # Show top 5 matches
+                st.write(f"• {title}")
+        
+        # Perform search
+        results = manager.search_tasks(search_term)
+        
+        st.write("---")
+        st.write(f"**Found {len(results)} task(s):**")
+        
+        if results:
+            for task in results:
+                st.write(
+                    f"**[{task.task_id}] {task.title}** "
+                    f"| {task.status} | {task.priority}"
+                )
+        else:
+            st.info("No tasks found matching your search")
+    else:
+        st.info("Enter a search term to find tasks")
+
 # ---------------- UPDATE TASK ----------------
 elif menu == "Update Task":
     st.header("🔄 Update Task Status")
@@ -84,12 +121,12 @@ elif menu == "Update Task":
 elif menu == "Delete Task":
     st.header("❌ Delete Task")
 
-    task_id = st.number_input("Task ID", min_value=1, step=1)
+    title = st.text_input("Task Title")
 
     if st.button("Delete Task"):
         try:
-            manager.delete_task(task_id)
-            st.success(f"Task {task_id} deleted")
+            manager.delete_task(title)
+            st.success(f"Task {title} deleted")
         except TaskNotFount as e:
             st.error(str(e))
 

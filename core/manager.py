@@ -29,13 +29,24 @@ class TaskManager:
                 return task
         raise TaskNotFount(f"Task {task_id} not Found")
     
-    def delete_task(self,task_id : int):
+    def delete_task(self,title : str):
         tasks = self.storage.load_tasks()
-        new_tasks = [t for t in tasks if t.task_id != task_id]
+        new_tasks = [t for t in tasks if t.title != title]
 
         if len(tasks) == len(new_tasks):
-            raise TaskNotFount(f"Task { task_id} not found")
+            raise TaskNotFount(f"Task { title} not found")
         self.storage.save_all(new_tasks)
+
+    def search_tasks(self, search_term: str):
+        """Search tasks by title (case-insensitive partial match)"""
+        tasks = self.storage.load_tasks()
+        search_term_lower = search_term.lower()
+        return [t for t in tasks if search_term_lower in t.title.lower()]
+    
+    def get_all_titles(self):
+        """Get all task titles for autocomplete"""
+        tasks = self.storage.load_tasks()
+        return [t.title for t in tasks]
 
 
 
